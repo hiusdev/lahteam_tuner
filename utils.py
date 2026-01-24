@@ -165,43 +165,36 @@ def replace_logger_with_print(file_path: str) -> bool:
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
     
-    pattern = r'\blogger\.(info|warning|error|debug)\s*\((.*?)\)'
-    replaced = re.sub(pattern, r'print(\2)', content, flags=re.DOTALL)
+    original = content
     
-    if replaced != content:
+    # Pattern 1: logger.info(...) - đơn giản, 1 dòng
+    # Xử lý cẩn thận với ngoặc lồng nhau
+    patterns = [
+        # logger.info("message")
+        (r'logger\.(info|warning|error|debug)\(([^()]*)\)', r'print(\2)'),
+        # logger.info(f"message {var}")
+        (r'logger\.(info|warning|error|debug)\((f"[^"]*")\)', r'print(\2)'),
+        (r"logger\.(info|warning|error|debug)\((f'[^']*')\)", r'print(\2)'),
+        # logger.info("message", extra=...)
+        (r'logger\.(info|warning|error|debug)\(("[^"]*"),\s*extra=[^)]+\)', r'print(\2)'),
+    ]
+    
+    for pattern, replacement in patterns:
+        content = re.sub(pattern, replacement, content)
+    
+    # Fallback: thay thế đơn giản logger.info -> print (cho các case phức tạp)
+    # Người dùng có thể cần fix thủ công một số case
+    content = re.sub(r'logger\.info\(', 'print(', content)
+    content = re.sub(r'logger\.warning\(', 'print("[WARNING]",', content)
+    content = re.sub(r'logger\.error\(', 'print("[ERROR]",', content)
+    content = re.sub(r'logger\.debug\(', 'print("[DEBUG]",', content)
+    
+    if content != original:
         with open(file_path, 'w', encoding='utf-8') as f:
-            f.write(replaced)
+            f.write(content)
         return True
     return False
 
-
-def remove_setup_logging_calls(file_path: str) -> bool:
-    """
-    Xóa các lời gọi setup_logging().
-    
-    Args:
-        file_path: Đường dẫn file Python
-    
-    Returns:
-        bool: True nếu có thay đổi
-    """
-    with open(file_path, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-    
-    new_lines = []
-    removed = False
-    
-    for line in lines:
-        stripped = line.strip()
-        if stripped in ["setup_logging()", "setup_logging(args, reset=True)"]:
-            removed = True
-            continue
-        new_lines.append(line)
-    
-    if removed:
-        with open(file_path, 'w', encoding='utf-8') as f:
-            f.writelines(new_lines)
-    return removed
 
 
 def patch_logger_files(repo_dir: str, verbose: bool = False):
@@ -217,11 +210,12 @@ def patch_logger_files(repo_dir: str, verbose: bool = False):
         for file in files:
             if file.endswith('.py'):
                 path = os.path.join(root, file)
+
                 try:
                     changed = replace_logger_with_print(path)
-                    changed2 = remove_setup_logging_calls(path)
-                    if (changed or changed2) and verbose:
-                        print(f"✅ Patched: {path}")
+                    if verbose:
+                        print(f"⏳ Đang patch: {path}")
+                    if changed:
                         count += 1
                 except Exception as e:
                     if verbose:

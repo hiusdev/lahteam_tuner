@@ -8,7 +8,6 @@ from .utils import (
     
     # Logger patch
     replace_logger_with_print,
-    remove_setup_logging_calls,
     patch_logger_files,
     
     # Dataset

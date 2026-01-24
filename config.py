@@ -1,5 +1,5 @@
 """
-Model configurations cho các loại model được hỗ trợ.
+Model configurations for supported model types.
 """
 
 # ==============================================================================
@@ -29,7 +29,7 @@ MODEL_CONFIG = {
         "network_module": "networks.lora_qwen_image",
         "script_prefix": "qwen_image",
         "model_version": "original",
-        # Training params từ docs chính thức
+        # Training params from official docs
         "training_params": {
             "timestep_sampling": "shift",
             "weighting_scheme": "none",
@@ -65,7 +65,7 @@ MODEL_CONFIG = {
             "timestep_sampling": "shift",
             "weighting_scheme": "none",
             "discrete_flow_shift": 2.2,
-            "fp8_base": False,  # Edit mode không dùng fp8_base
+            "fp8_base": False,  # Edit mode doesn't use fp8_base
             "control_resolution": [1024, 1024],
         }
     },
@@ -247,21 +247,21 @@ FLUX2_CONFIG = {
     }
 }
 
-# Thêm thông tin chung cho FLUX.2
+# Add common info for FLUX.2
 for key in FLUX2_CONFIG:
     FLUX2_CONFIG[key]["network_module"] = "networks.lora_flux_2"
     FLUX2_CONFIG[key]["script_prefix"] = "flux_2"
     FLUX2_CONFIG[key]["is_flux2"] = True
-    # Training params từ docs chính thức
+    # Training params from official docs
     FLUX2_CONFIG[key]["training_params"] = {
         "timestep_sampling": "flux2_shift",
         "weighting_scheme": "none",
         "fp8_base": True,
         "fp8_scaled": True,  # Recommended with fp8_base for DiT
         "mixed_precision": "bf16",
-        # fp8_text_encoder: không dùng cho dev (Mistral 3)
+        # fp8_text_encoder: not used for dev (Mistral 3)
         "fp8_text_encoder": key != "flux2_dev",
-        # Control resolution theo docs: 2024x2024 for single, 1024x1024 for multi
+        # Control resolution from docs: 2024x2024 for single, 1024x1024 for multi
         "control_resolution": [2024, 2024],
         "no_resize_control": True,  # FLUX.2 official inference settings
     }
@@ -269,13 +269,13 @@ for key in FLUX2_CONFIG:
 
 def get_model_config(model_type: str) -> dict:
     """
-    Lấy config cho model_type.
+    Get config for model_type.
     
     Args:
-        model_type: Loại model (z_image_turbo, qwen_image, flux2_*, ...)
+        model_type: Model type (z_image_turbo, qwen_image, flux2_*, ...)
     
     Returns:
-        dict: Config của model
+        dict: Model config
     """
     if model_type.startswith("flux2_"):
         config = FLUX2_CONFIG.get(model_type)
@@ -283,6 +283,6 @@ def get_model_config(model_type: str) -> dict:
         config = MODEL_CONFIG.get(model_type)
     
     if not config:
-        raise ValueError(f"Không tìm thấy config cho model: {model_type}")
+        raise ValueError(f"Config not found for model: {model_type}")
     
     return config

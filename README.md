@@ -3,21 +3,23 @@
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**Helper library cho việc train LoRA trên Google Colab** - Hỗ trợ FLUX.2, Qwen Image, và Z-Image Turbo.
+**Helper library for LoRA training on Google Colab** - Supports FLUX.2, Qwen Image, and Z-Image Turbo.
 
-## ✨ Tính năng
+[🇻🇳 Tiếng Việt](README.vi.md)
 
-- 🚀 **Tự động tải model** - Chỉ 1 lệnh để tải VAE, Text Encoder, DiT
-- ⚙️ **Auto config** - Tự động detect model type và tạo cấu hình phù hợp
-- 📊 **Dataset config** - Tạo TOML config cho dataset training
-- 🔧 **Training helpers** - Build command line arguments tự động
-- 📝 **Logger patch** - Thay thế logger thành print() cho Colab
+## ✨ Features
 
-## 📦 Models được hỗ trợ
+- 🚀 **Auto download models** - Single command to download VAE, Text Encoder, DiT
+- ⚙️ **Auto config** - Automatically detect model type and create appropriate configuration
+- 📊 **Dataset config** - Generate TOML config for training dataset
+- 🔧 **Training helpers** - Build command line arguments automatically
+- 📝 **Logger patch** - Replace logger with print() for Colab compatibility
+
+## 📦 Supported Models
 
 | Model | Type | Description |
 |-------|------|-------------|
-| `z_image_turbo` | Z-Image | Mô hình Z-Image Turbo |
+| `z_image_turbo` | Z-Image | Z-Image Turbo model |
 | `qwen_image` | Qwen | Qwen Image generation |
 | `qwen_image_edit` | Qwen | Qwen Image editing |
 | `qwen_image_edit_2509` | Qwen | Qwen Image editing v2509 |
@@ -27,9 +29,9 @@
 | `flux2_klein_9b` | FLUX.2 | FLUX.2 Klein 9B |
 | `flux2_klein_base_9b` | FLUX.2 | FLUX.2 Klein Base 9B ⭐ |
 
-> ⭐ **Recommended**: Sử dụng `klein_base_*` cho training LoRA
+> ⭐ **Recommended**: Use `klein_base_*` for LoRA training
 
-## 🚀 Cài đặt
+## 🚀 Installation
 
 ```python
 !git clone https://github.com/hiusdev/lahteam_tuner
@@ -47,7 +49,7 @@ from lahteam_tuner import download_model, download_flux2_model, download_qwen_mo
 paths = download_model("flux2_klein_base_4b", "/content/models", hf_token="...")
 # Returns: {"vae_path": ..., "text_encoders_path": ..., "dit_path": ...}
 
-# Hoặc gọi trực tiếp
+# Or call directly
 paths = download_flux2_model("flux2_klein_base_4b", "/content/models")
 paths = download_qwen_model("z_image_turbo", "/content/models")
 ```
@@ -97,33 +99,33 @@ config = get_model_config("flux2_klein_base_4b")
 ```python
 from lahteam_tuner import (
     # Model info
-    is_flux2_model,          # Kiểm tra có phải FLUX.2 không
-    is_edit_model,           # Kiểm tra có phải Edit model không
-    get_flux2_version,       # Lấy version string (dev, klein-4b, ...)
-    get_script_prefix,       # Lấy prefix cho script (flux_2, qwen_image, ...)
-    get_network_module,      # Lấy network module path
+    is_flux2_model,          # Check if FLUX.2 model
+    is_edit_model,           # Check if Edit model
+    get_flux2_version,       # Get version string (dev, klein-4b, ...)
+    get_script_prefix,       # Get script prefix (flux_2, qwen_image, ...)
+    get_network_module,      # Get network module path
     
     # Training
-    build_train_args,        # Build command line arguments từ dict
-    generate_sample_prompts, # Tạo file sample prompts
+    build_train_args,        # Build command line arguments from dict
+    generate_sample_prompts, # Generate sample prompts file
     
     # Logger patch
-    patch_logger_files,      # Patch logger thành print() cho Colab
+    patch_logger_files,      # Patch logger to print() for Colab
     
     # File utils
-    ensure_dir,              # Tạo thư mục nếu chưa tồn tại
-    find_images_in_folder,   # Tìm ảnh trong folder
-    count_images_in_folder,  # Đếm số ảnh trong folder
-    read_caption,            # Đọc file caption
-    write_caption,           # Ghi file caption
+    ensure_dir,              # Create directory if not exists
+    find_images_in_folder,   # Find images in folder
+    count_images_in_folder,  # Count images in folder
+    read_caption,            # Read caption file
+    write_caption,           # Write caption file
     
     # Dataset
-    download_and_unzip,      # Tải và giải nén dataset từ URL
-    get_repeats_from_folder_name,  # Lấy repeats từ tên folder (10_name)
+    download_and_unzip,      # Download and extract dataset from URL
+    get_repeats_from_folder_name,  # Get repeats from folder name (10_name)
 )
 ```
 
-## 📁 Cấu trúc thư viện
+## 📁 Library Structure
 
 ```
 lahteam_tuner/
@@ -138,7 +140,7 @@ lahteam_tuner/
 
 ## 📝 License
 
-MIT License - Xem file [LICENSE](LICENSE) để biết thêm chi tiết.
+MIT License - See [LICENSE](LICENSE) file for details.
 
 ## 👥 Authors
 

@@ -1,5 +1,5 @@
 # LahTeam Musubi Tuner Helper Library
-# Chỉ chứa các helper functions tái sử dụng
+# Contains reusable helper functions
 
 from .utils import (
     # Download component

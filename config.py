@@ -212,7 +212,7 @@ FLUX2_CONFIG = {
             "type": "file",
             "repo_id": "Comfy-Org/vae-text-encorder-for-flux-klein-9b",
             "subfolder": "split_files/text_encoders",
-            "filename": "qwen_3_4b.safetensors"
+            "filename": "qwen_3_8b.safetensors"
         },
         "dit": {
             "type": "file",
@@ -233,7 +233,7 @@ FLUX2_CONFIG = {
             "type": "file",
             "repo_id": "Comfy-Org/vae-text-encorder-for-flux-klein-9b",
             "subfolder": "split_files/text_encoders",
-            "filename": "qwen_3_4b.safetensors"
+            "filename": "qwen_3_8b.safetensors"
         },
         "dit": {
             "type": "file",

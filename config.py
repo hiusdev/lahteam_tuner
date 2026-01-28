@@ -216,9 +216,8 @@ FLUX2_CONFIG = {
         },
         "dit": {
             "type": "file",
-            "repo_id": "Comfy-Org/vae-text-encorder-for-flux-klein-9b",
+            "repo_id": "Hius/FLUX.2-klein-9B",
             "filename": "flux-2-klein-9b.safetensors",
-            "subfolder": "split_files/diffusion_models"
         },
         "model_version": "klein-9b",
         "max_blocks_to_swap": 16,
@@ -238,9 +237,8 @@ FLUX2_CONFIG = {
         },
         "dit": {
             "type": "file",
-            "repo_id": "Comfy-Org/vae-text-encorder-for-flux-klein-9b",
+            "repo_id": "Hius/FLUX.2-klein-9B",
             "filename": "flux-2-klein-base-9b.safetensors",
-            "subfolder": "split_files/diffusion_models"
         },
         "model_version": "klein-base-9b",
         "max_blocks_to_swap": 16,

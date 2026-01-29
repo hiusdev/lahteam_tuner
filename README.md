@@ -17,19 +17,24 @@
 
 ## 📦 Supported Models
 
-| Model | Type | Description |
-|-------|------|-------------|
-| `z_image_turbo` | Z-Image | Z-Image Turbo model |
-| `qwen_image` | Qwen | Qwen Image generation |
-| `qwen_image_edit` | Qwen | Qwen Image editing |
-| `qwen_image_edit_2509` | Qwen | Qwen Image editing v2509 |
-| `flux2_dev` | FLUX.2 | FLUX.2 Dev (Mistral 3) |
-| `flux2_klein_4b` | FLUX.2 | FLUX.2 Klein 4B |
-| `flux2_klein_base_4b` | FLUX.2 | FLUX.2 Klein Base 4B ⭐ |
-| `flux2_klein_9b` | FLUX.2 | FLUX.2 Klein 9B |
-| `flux2_klein_base_9b` | FLUX.2 | FLUX.2 Klein Base 9B ⭐ |
+| Model | Type | Description | I2I |
+|-------|------|-------------|-----|
+| `z_image_turbo` | Z-Image | Z-Image Turbo model | ❌ |
+| `qwen_image` | Qwen | Qwen Image generation | ❌ |
+| `qwen_image_edit` | Qwen | Qwen Image editing | ✅ Required |
+| `qwen_image_edit_2509` | Qwen | Qwen Image editing v2509 | ✅ Required |
+| `flux2_dev` | FLUX.2 | FLUX.2 Dev (Mistral 3) | ✅ Optional |
+| `flux2_klein_4b` | FLUX.2 | FLUX.2 Klein 4B | ✅ Optional |
+| `flux2_klein_base_4b` | FLUX.2 | FLUX.2 Klein Base 4B ⭐ | ✅ Optional |
+| `flux2_klein_9b` | FLUX.2 | FLUX.2 Klein 9B | ✅ Optional |
+| `flux2_klein_base_9b` | FLUX.2 | FLUX.2 Klein Base 9B ⭐ | ✅ Optional |
 
 > ⭐ **Recommended**: Use `klein_base_*` for LoRA training
+> 
+> **I2I Support**: 
+> - ❌ = Text-to-Image only
+> - ✅ Required = Must provide control images
+> - ✅ Optional = Can train T2I or I2I (with control images)
 
 ## 🚀 Installation
 

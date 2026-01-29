@@ -25,6 +25,7 @@ from .utils import (
     get_max_blocks_to_swap,
     is_flux2_model,
     is_edit_model,
+    supports_i2i_mode,
     get_train_script,
     get_cache_script_prefix,
     

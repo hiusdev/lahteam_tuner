@@ -359,8 +359,21 @@ def is_flux2_model(model_type: str) -> bool:
 
 
 def is_edit_model(model_type: str) -> bool:
-    """Check if model is Edit model."""
+    """Check if model is Edit-only model (requires control images)."""
     return model_type in ["qwen_image_edit", "qwen_image_edit_2509"]
+
+
+def supports_i2i_mode(model_type: str) -> bool:
+    """Check if model supports Image-to-Image training (optional control).
+    
+    These models can train in both T2I and I2I modes:
+    - FLUX.2 Klein: Optional control images
+    - Qwen Edit: Required control images (is_edit_model returns True)
+    """
+    return (
+        model_type.startswith("flux2_") or  # FLUX.2 supports I2I
+        is_edit_model(model_type)            # Edit models require I2I
+    )
 
 
 def get_train_script(model_type: str) -> str:

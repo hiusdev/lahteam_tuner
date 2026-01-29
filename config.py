@@ -142,7 +142,7 @@ MODEL_CONFIG = {
             "type": "file",
             "repo_id": "Comfy-Org/z_image", 
             "filename": "z_image_bf16.safetensors", 
-            "subfolder": "split_files/diffusion_model"
+            "subfolder": "split_files/diffusion_models"
         },
         "network_module": "networks.lora_zimage",
         "script_prefix": "zimage",

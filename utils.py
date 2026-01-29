@@ -296,7 +296,7 @@ def get_script_prefix(model_type: str) -> str:
     """
     if model_type.startswith("flux2_"):
         return "flux_2"
-    elif model_type == "z_image_turbo":
+    elif model_type.startswith("z_image_"):
         return "zimage"
     else:
         return "qwen_image"
@@ -314,7 +314,7 @@ def get_network_module(model_type: str) -> str:
     """
     if model_type.startswith("flux2_"):
         return "networks.lora_flux_2"
-    elif model_type == "z_image_turbo":
+    elif model_type.startswith("z_image_"):
         return "networks.lora_zimage"
     else:
         return "networks.lora_qwen_image"
@@ -380,7 +380,7 @@ def get_train_script(model_type: str) -> str:
     """Get training script filename."""
     if model_type.startswith("flux2_"):
         return "flux_2_train_network.py"
-    elif model_type == "z_image_turbo":
+    elif model_type.startswith("z_image_"):
         return "zimage_train_network.py"
     else:
         return "qwen_image_train_network.py"

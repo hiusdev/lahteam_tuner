@@ -124,8 +124,38 @@ MODEL_CONFIG = {
             "weighting_scheme": "none",
             "discrete_flow_shift": 2.0,
         }
+    }, 
+    "z_image_base": {
+        "vae": {
+            "type": "file",
+            "repo_id": "Comfy-Org/z_image", 
+            "filename": "ae.safetensors", 
+            "subfolder": "split_files/vae"
+        },
+        "text_encoder": {
+            "type": "file",
+            "repo_id": "Comfy-Org/z_image", 
+            "filename": "qwen_3_4b.safetensors", 
+            "subfolder": "split_files/text_encoders"
+        },
+        "dit": {
+            "type": "file",
+            "repo_id": "Comfy-Org/z_image", 
+            "filename": "z_image_bf16.safetensors", 
+            "subfolder": "split_files/diffusion_model"
+        },
+        "network_module": "networks.lora_zimage",
+        "script_prefix": "zimage",
+        "model_version": None,
+        "max_blocks_to_swap": 28,  # Z-Image max is 28
+        "training_params": {
+            "timestep_sampling": "shift",
+            "weighting_scheme": "none",
+            "discrete_flow_shift": 2.0,
+        }
     }
 }
+
 
 
 # ==============================================================================

@@ -34,8 +34,6 @@ MODEL_CONFIG = {
             "timestep_sampling": "shift",
             "weighting_scheme": "none",
             "discrete_flow_shift": 2.2,
-            "fp8_base": True,
-            "fp8_vl": True,  # Recommended for < 16GB VRAM
         }
     },
     "qwen_image_edit": {
@@ -65,7 +63,6 @@ MODEL_CONFIG = {
             "timestep_sampling": "shift",
             "weighting_scheme": "none",
             "discrete_flow_shift": 2.2,
-            "fp8_base": False,  # Edit mode doesn't use fp8_base
             "control_resolution": [1024, 1024],
         }
     },
@@ -96,7 +93,6 @@ MODEL_CONFIG = {
             "timestep_sampling": "shift",
             "weighting_scheme": "none",
             "discrete_flow_shift": 2.2,
-            "fp8_base": False,
             "control_resolution": [1024, 1024],
         }
     },
@@ -122,11 +118,11 @@ MODEL_CONFIG = {
         "network_module": "networks.lora_zimage",
         "script_prefix": "zimage",
         "model_version": None,
+        "max_blocks_to_swap": 28,  # Z-Image max is 28
         "training_params": {
             "timestep_sampling": "shift",
             "weighting_scheme": "none",
             "discrete_flow_shift": 2.0,
-            "fp8_base": True,
         }
     }
 }
@@ -254,14 +250,11 @@ for key in FLUX2_CONFIG:
     FLUX2_CONFIG[key]["training_params"] = {
         "timestep_sampling": "flux2_shift",
         "weighting_scheme": "none",
-        "fp8_base": True,
-        "fp8_scaled": True,  # Recommended with fp8_base for DiT
         "mixed_precision": "bf16",
-        # fp8_text_encoder: not used for dev (Mistral 3)
-        "fp8_text_encoder": key != "flux2_dev",
-        # Control resolution from docs: 2024x2024 for single, 1024x1024 for multi
+        # fp8_text_encoder: not available for dev (Mistral 3)
+        "fp8_text_encoder_available": key != "flux2_dev",
+        # Control resolution from docs
         "control_resolution": [2024, 2024],
-        "no_resize_control": True,  # FLUX.2 official inference settings
     }
 
 

@@ -400,6 +400,11 @@ def create_dataset_config(
     """
     Create dataset_config.toml in official musubi-tuner format.
     
+    Supports mixed T2I/I2I training:
+    - If control_dir has subfolders matching data_dir subfolders → per-subfolder control (I2I)
+    - If control_dir has only images (no subfolders) → shared control for all datasets
+    - If train subfolder has no matching control subfolder → T2I (no control)
+    
     Args:
         data_dir: Directory containing images (can have subfolders 10_name)
         control_dir: Control images directory (for FLUX.2/Qwen Edit)
@@ -407,9 +412,6 @@ def create_dataset_config(
         config_dir: Directory to save config file
         resolution: (width, height) default [960, 544]
         control_resolution: Resolution for control images
-                           - Qwen Edit: recommended [1024, 1024]
-                           - FLUX.2 single control: [2024, 2024]
-                           - FLUX.2 multi control: [1024, 1024]
         batch_size: Batch size, default 1
         default_repeats: Default repeats count, default 1
         caption_extension: Caption file extension
@@ -420,24 +422,6 @@ def create_dataset_config(
     
     Returns:
         str: Path to created config file
-    
-    Example:
-        # Qwen Edit
-        path = create_dataset_config(
-            data_dir="/content/data/output",
-            control_dir="/content/data/input",
-            control_resolution=(1024, 1024),
-            model_type="qwen_image_edit"
-        )
-        
-        # FLUX.2
-        path = create_dataset_config(
-            data_dir="/content/data/output",
-            control_dir="/content/data/input",
-            control_resolution=(2024, 2024),
-            no_resize_control=True,
-            model_type="flux2_klein_base_4b"
-        )
     """
     import toml
     
@@ -448,13 +432,36 @@ def create_dataset_config(
     # Set default control_resolution based on model
     if control_dir and control_resolution is None:
         if is_edit:
-            control_resolution = (1024, 1024)  # Recommended for Qwen Edit
+            control_resolution = (1024, 1024)
         elif is_flux2:
-            control_resolution = (2024, 2024)  # Single control for FLUX.2
+            control_resolution = (2024, 2024)
+    
+    # Analyze control directory structure
+    control_subfolders = {}  # {folder_name: folder_path}
+    control_has_shared_images = False  # Images directly in control_dir
+    
+    if control_dir and os.path.exists(control_dir):
+        # Check for subfolders
+        for item in os.scandir(control_dir):
+            if item.is_dir():
+                control_subfolders[item.name] = item.path
+        
+        # Check for images directly in control_dir (shared control)
+        control_has_shared_images = find_images_in_folder(control_dir)
+        
+        if control_subfolders:
+            print(f"📂 Control mode: Per-subfolder ({len(control_subfolders)} subfolders)")
+        elif control_has_shared_images:
+            print(f"📂 Control mode: Shared (all images in one folder)")
+        else:
+            print(f"⚠️ Control folder is empty!")
+            control_dir = None
     
     datasets = []
+    t2i_count = 0
+    i2i_count = 0
     
-    # Scan subfolders
+    # Scan data subfolders
     try:
         subfolders = sorted([f.path for f in os.scandir(data_dir) if f.is_dir()])
     except FileNotFoundError:
@@ -481,26 +488,46 @@ def create_dataset_config(
             "num_repeats": repeats
         }
         
-        # Cache directory (different for each dataset)
+        # Cache directory
         if cache_dir:
             dataset_cache = os.path.join(cache_dir, f"cache_{idx}")
             dataset_item["cache_directory"] = dataset_cache
         
-        # Control directory (for Edit mode or FLUX.2)
-        if control_dir and (is_edit or is_flux2):
-            dataset_item["control_directory"] = control_dir
+        # Determine control for this dataset
+        dataset_control_dir = None
+        
+        if control_dir:
+            # Priority 1: Matching subfolder in control_dir
+            if folder_name in control_subfolders:
+                dataset_control_dir = control_subfolders[folder_name]
+            # Priority 2: Shared control (images directly in control_dir)
+            elif control_has_shared_images:
+                dataset_control_dir = control_dir
+        
+        # Add control settings if available
+        if dataset_control_dir:
+            dataset_item["control_directory"] = dataset_control_dir
+            i2i_count += 1
             
             if control_resolution:
                 dataset_item["control_resolution"] = list(control_resolution)
             
             if no_resize_control:
                 dataset_item["no_resize_control"] = True
+            
+            print(f"   ✅ Dataset: '{folder_name}' | Repeats: {repeats} | Mode: I2I")
+        else:
+            t2i_count += 1
+            print(f"   ✅ Dataset: '{folder_name}' | Repeats: {repeats} | Mode: T2I")
         
-        print(f"   ✅ Dataset: '{folder_name}' | Repeats: {repeats}")
         datasets.append(dataset_item)
     
     if not datasets:
         raise ValueError("No image data found!")
+    
+    # Summary
+    print()
+    print(f"📊 Summary: {len(datasets)} datasets ({t2i_count} T2I, {i2i_count} I2I)")
     
     # Build full config
     full_config = {
